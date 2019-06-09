@@ -15,6 +15,11 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with XFoil.  If not, see <https://www.gnu.org/licenses/>.
+
+#import sys
+#sys.path.insert(0, '/Users/Kike/Library/Mobile Documents/com~apple~CloudDocs/Documents/Inbox/TU_Delft/MsC/Q1/Aircraft_Aerodynamics/Code/xfoil-python/')
+
+
 import numpy as np
 import ctypes
 import os
@@ -24,15 +29,17 @@ from ctypes import c_bool, c_int, c_float, byref, POINTER, cdll
 from shutil import copy2
 from tempfile import NamedTemporaryFile
 
-from .model import Airfoil
+from xfoil.model import Airfoil
 
 here = os.path.abspath(os.path.dirname(__file__))
-lib_path = glob.glob(os.path.join(here, 'libxfoil.*'))[0]
-lib_ext = lib_path[lib_path.rfind('.'):]
+#lib_path = glob.glob(os.path.join(here, 'libxfoil.*'))[0]
+#lib_ext = lib_path[lib_path.rfind('.'):]
+
+lib_path = '/Users/Kike/Library/Mobile Documents/com~apple~CloudDocs/Documents/Inbox/TU_Delft/MsC/Q1/Aircraft_Aerodynamics/Code/xfoil-python/build/lib.macosx-10.7-x86_64-3.6/xfoil/libxfoil.dylib'
+lib_ext = 'dylib'
 
 fptr = POINTER(c_float)
 bptr = POINTER(c_bool)
-
 
 class XFoil(object):
     """Interface to the XFoil Fortran routines.
