@@ -29,7 +29,7 @@ from ctypes import c_bool, c_int, c_float, byref, POINTER, cdll
 from shutil import copy2
 from tempfile import NamedTemporaryFile
 
-from xfoil.model import Airfoil
+from src.xfoil.model import Airfoil
 
 here = os.path.abspath(os.path.dirname(__file__))
 #lib_path = glob.glob(os.path.join(here, 'libxfoil.*'))[0]
