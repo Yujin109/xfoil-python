@@ -18,8 +18,11 @@
 import numpy as np
 import unittest
 
-from .xfoil import XFoil
-from .model import Airfoil
+from xfoil import XFoil
+from xfoil.model import Airfoil
+
+# from .xfoil import XFoil
+# from .model import Airfoil
 
 naca0012 = Airfoil(
     x=np.array([+1.0000e+00, +9.9168e-01, +9.8037e-01, +9.6727e-01, +9.5272e-01, +9.3720e-01, +9.2112e-01, +9.0474e-01,
@@ -78,9 +81,11 @@ class TestXFoil(unittest.TestCase):
         """Analyse the NACA 0012 at Re = 1e6, M = 0, α = 10 degrees and verify the results."""
         xf = XFoil()
         xf.airfoil = naca0012
-        xf.conditions = (1e6, 0)
-        xf.max_iter = 100
-        cl, cd, cm = xf.a(10)
+        xf.conditions = (50000, 0)
+        xf.max_iter = 1000
+        cl, cd, cm, cp = xf.a(5)
+
+        print(cl, cd, cm, cp)
 
         self.assertAlmostEqual(cl, 1.0809, 4)
         self.assertAlmostEqual(cd, 0.0150, 4)
@@ -91,7 +96,7 @@ class TestXFoil(unittest.TestCase):
         xf = XFoil()
         xf.airfoil = naca0012
         xf.conditions = (1e6, 0)
-        a, cd, cm = xf.cl(1)
+        a, cd, cm, cp= xf.cl(1)
 
         self.assertAlmostEqual(a, 9.0617, 4)
         self.assertAlmostEqual(cd, 0.0135, 4)
@@ -103,7 +108,7 @@ class TestXFoil(unittest.TestCase):
         xf.airfoil = naca0012
         xf.conditions = (1e6, 0)
         xf.max_iter = 40
-        a, cl, cd, cm = xf.aseq(-20, 20, 0.5)
+        a, cl, cd, cm, co = xf.aseq(-20, 20, 0.5)
 
         self.assertNumpyArraysAlmostEqual(a, np.arange(-20, 20, 0.5), 4)
         self.assertNumpyArraysAlmostEqual(cl, np.array([
