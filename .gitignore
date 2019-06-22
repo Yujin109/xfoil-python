@@ -21,3 +21,5 @@ src/xfoil/__pycache__/xfoil.cpython-36.pyc
 build_backup
 *.ipynb
 *.mod
+
+.vscode
