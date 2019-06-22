@@ -485,4 +485,81 @@ contains
         end do
     end subroutine cseq
 
+    subroutine bldump_(c_filename, length) bind(c, name='boundary_layer_dump')
+        use m_xoper, only: bldump
+        use i_xfoil
+        use iso_c_binding
+        implicit none
+
+        ! Input parameters
+        integer(c_int), intent(in) :: length
+        CHARACTER(kind=C_CHAR), intent(in) :: c_filename
+
+        ! Fortran-like string
+        character(len = length) :: f_filename
+
+        ! Convert C char pointer array to Fortran string
+        f_filename = char_array_to_string(c_filename, length)
+        
+        ! Output Fortran filename
+        write(*,*) f_filename
+
+        ! Dump boundary layer properties
+        call bldump(f_filename)
+
+    end subroutine bldump_
+
+    subroutine cpdump_(c_filename, length) bind(c, name='cp_dump')
+        use m_xoper, only: cpdump
+        use i_xfoil
+        use iso_c_binding
+        implicit none
+
+        ! Input parameters
+        integer(c_int), intent(in) :: length
+        CHARACTER(kind=C_CHAR), intent(in) :: c_filename
+
+        ! Fortran-like string
+        character(len = length) :: f_filename
+
+        ! Convert C char pointer array to Fortran string
+        f_filename = char_array_to_string(c_filename, length)
+        
+        ! Output Fortran filename
+        write(*,*) f_filename
+
+        ! Dump boundary layer properties
+        call cpdump(f_filename)
+
+    end subroutine cpdump_
+
+
+    ! Utility functions
+    ! fortran character(len=*) are not compatible with c
+    ! To be compatible with c, strings sould be copied to a c_char array
+    function char_array_to_string(char_array, length)
+        integer(c_int) :: length
+        character(c_char) :: char_array(length)
+        character(len=length) :: char_array_to_string
+        integer :: i
+        do i = 1, length
+        char_array_to_string(i:i) = char_array(i)
+        enddo
+    end function char_array_to_string
+   
+    ! C ends strings with a \0 character. Add this so it is received correctly in c compatible languages
+    function string_to_char_array(s, length)
+        integer(c_int) :: length
+        character :: s(*)
+        character(c_char) :: string_to_char_array(length)
+        integer :: i
+        
+        do i = 1, length
+            string_to_char_array(i:i) = s(i)
+        enddo
+
+        string_to_char_array(i+1:i+1) = c_null_char
+
+    end function string_to_char_array
+
 end module api

@@ -25,7 +25,7 @@ import ctypes
 import os
 import glob
 
-from ctypes import c_bool, c_int, c_float, byref, POINTER, cdll
+from ctypes import c_bool, c_int, c_float, byref, POINTER, cdll, c_char_p, c_char
 from shutil import copy2
 from tempfile import NamedTemporaryFile
 
@@ -322,3 +322,61 @@ class XFoil(object):
         cm[isnan] = np.nan
         cp[isnan] = np.nan
         return a.astype(float), cl.astype(float), cd.astype(float), cm.astype(float), cp.astype(float)
+
+    def dump_boundary_layer(self, fname='boundary_layer.txt'):
+        """Dump boundary layer data to file. 
+
+        Parameters
+        ----------
+        fname: str
+
+        Returns
+        -------
+        None
+        """
+        # Get file name length
+        c_fname, string_length = self._py2c_string(fname)
+
+        self._lib.boundary_layer_dump(c_fname, byref(string_length))
+
+    def dump_cp(self, fname='cp.txt'):
+        """Dump Cp coefficient to file.
+
+        Parameters
+        ----------
+        fname: str
+
+        Returns
+        -------
+        None
+
+        """
+        # Get file name length
+        c_fname, string_length = self._py2c_string(fname)
+
+        self._lib.cp_dump(c_fname, byref(string_length))
+
+    def _py2c_string(self, fname):
+        """Convert a Python string to a C char array.
+
+        Parameters
+        ----------
+        fname: str
+
+        Returns
+        -------
+        c_fname: ctypes.c_char_p
+            fname as C char pointer
+        
+        string_length: ctypes.c_int
+            string length as C int
+
+        """
+        # Get file name length
+        string_length = c_int(len(fname))
+
+        # Create a C char array from the string
+        c_fname = c_char_p(fname.encode('utf-8'))
+
+        # Return
+        return c_fname, string_length
