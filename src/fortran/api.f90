@@ -321,12 +321,12 @@ contains
         LQSppl = .false.
     end subroutine filter
 
-    subroutine alfa_(a_input, cl_out, cd_out, cm_out, cp_out, conv) bind(c, name='alfa')
+    subroutine alfa_(a_input, cl_out, cd_out, cd_p_out, cm_out, cp_out, conv) bind(c, name='alfa')
         use m_xoper, only: specal, viscal, fcpmin
         use i_xfoil
 
         real(c_float), intent(in) :: a_input
-        real(c_float), intent(out) :: cl_out, cd_out, cm_out, cp_out
+        real(c_float), intent(out) :: cl_out, cd_out, cd_p_out, cm_out, cp_out
         logical(c_bool), intent(out) :: conv
         ADEg = a_input
 
@@ -345,20 +345,21 @@ contains
             conv = .true.
         end if
 
-        cl_out = CL
-        cd_out = CD
-        cm_out = CM
+        cl_out   = CL
+        cd_out   = CD
+        cd_p_out = CDP
+        cm_out   = CM
 
         call fcpmin
         cp_out = CPMn
     end subroutine alfa_
 
-    subroutine cl_(cl_input, a_out, cd_out, cm_out, cp_out, conv) bind(c, name='cl')
+    subroutine cl_(cl_input, a_out, cd_out, cd_p_out, cm_out, cp_out, conv) bind(c, name='cl')
         use m_xoper, only: speccl, viscal, fcpmin
         use i_xfoil
 
         real(c_float), intent(in) :: cl_input
-        real(c_float), intent(out) :: a_out, cd_out, cm_out, cp_out
+        real(c_float), intent(out) :: a_out, cd_out, cd_p_out, cm_out, cp_out
         logical(c_bool), intent(out) :: conv
 
         CLSpec = cl_input
@@ -378,9 +379,10 @@ contains
             conv = .true.
         end if
 
-        a_out = ALFa / DTOr
-        cd_out = CD
-        cm_out = CM
+        a_out    = ALFa / DTOr
+        cd_out   = CD
+        cd_p_out = CDP
+        cm_out   = CM
 
         call fcpmin
         cp_out = CPMn
