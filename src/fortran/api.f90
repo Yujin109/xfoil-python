@@ -18,7 +18,7 @@
 !***********************************************************************
 
 module api
-    use, intrinsic :: iso_c_binding, only: c_float, c_int, c_bool, c_null_ptr
+    use, intrinsic :: iso_c_binding, only: c_float, c_int, c_bool, c_null_ptr, c_char, c_null_char
     implicit none
 contains
     subroutine set_print(setting) bind(c, name='set_print')
@@ -321,12 +321,12 @@ contains
         LQSppl = .false.
     end subroutine filter
 
-    subroutine alfa_(a_input, cl_out, cd_out, cd_p_out, cm_out, cp_out, conv) bind(c, name='alfa')
+    subroutine alfa_(a_input, cl_out, cd_out, cd_f_out, cd_p_out, cm_out, cp_out, conv) bind(c, name='alfa')
         use m_xoper, only: specal, viscal, fcpmin
         use i_xfoil
 
         real(c_float), intent(in) :: a_input
-        real(c_float), intent(out) :: cl_out, cd_out, cd_p_out, cm_out, cp_out
+        real(c_float), intent(out) :: cl_out, cd_out, cd_f_out, cd_p_out, cm_out, cp_out
         logical(c_bool), intent(out) :: conv
         ADEg = a_input
 
@@ -347,6 +347,7 @@ contains
 
         cl_out   = CL
         cd_out   = CD
+        cd_f_out = CDF
         cd_p_out = CDP
         cm_out   = CM
 
@@ -354,12 +355,12 @@ contains
         cp_out = CPMn
     end subroutine alfa_
 
-    subroutine cl_(cl_input, a_out, cd_out, cd_p_out, cm_out, cp_out, conv) bind(c, name='cl')
+    subroutine cl_(cl_input, a_out, cd_out, cd_f_out, cd_p_out, cm_out, cp_out, conv) bind(c, name='cl')
         use m_xoper, only: speccl, viscal, fcpmin
         use i_xfoil
 
         real(c_float), intent(in) :: cl_input
-        real(c_float), intent(out) :: a_out, cd_out, cd_p_out, cm_out, cp_out
+        real(c_float), intent(out) :: a_out, cd_out, cd_f_out, cd_p_out, cm_out, cp_out
         logical(c_bool), intent(out) :: conv
 
         CLSpec = cl_input
@@ -381,6 +382,7 @@ contains
 
         a_out    = ALFa / DTOr
         cd_out   = CD
+        cd_f_out = CDF
         cd_p_out = CDP
         cm_out   = CM
 

@@ -211,19 +211,20 @@ class XFoil(object):
 
         Returns
         -------
-        cl, cd, cd_p, cm, cp : float
+        cl, cd, cd_f, cd_p, cm, cp : float
             Corresponding values of the lift, drag, pressure drag, moment, and minimum pressure coefficients.
         """
         cl   = c_float()
         cd   = c_float()
+        cd_f = c_float()
         cd_p = c_float()
         cm   = c_float()
         cp   = c_float()
         conv = c_bool()
 
-        self._lib.alfa(byref(c_float(a)), byref(cl), byref(cd), byref(cd_p), byref(cm), byref(cp), byref(conv))
+        self._lib.alfa(byref(c_float(a)), byref(cl), byref(cd), byref(cd_f), byref(cd_p), byref(cm), byref(cp), byref(conv))
 
-        return (cl.value, cd.value, cd_p.value, cm.value, cp.value) if conv else (np.nan, np.nan, np.nan, np.nan, np.nan)
+        return (cl.value, cd.value, cd_f.value, cd_p.value, cm.value, cp.value) if conv else (np.nan, np.nan, np.nan, np.nan, np.nan, np.nan)
 
     def cl(self, cl):
         """"Analyze airfoil at a fixed lift coefficient.
@@ -235,19 +236,20 @@ class XFoil(object):
 
         Returns
         -------
-        a, cd, cd_p, cm, cp : float
+        a, cd, cd_f, cd_p, cm, cp : float
             Corresponding values of the angle of attack, drag, moment, and minimum pressure coefficients.
         """
         a    = c_float()
         cd   = c_float()
+        cd_f = c_float()
         cd_p = c_float()
         cm   = c_float()
         cp   = c_float()
         conv = c_bool()
 
-        self._lib.cl(byref(c_float(cl)), byref(a), byref(cd), byref(cd_p), byref(cm), byref(cp), byref(conv))
+        self._lib.cl(byref(c_float(cl)), byref(a), byref(cd), byref(cd_f), byref(cd_p), byref(cm), byref(cp), byref(conv))
 
-        return (a.value, cd.value, cd_p.value, cm.value, cp.value) if conv else (np.nan, np.nan, np.nan, np.nan, np.nan)
+        return (a.value, cd.value, cd_f.values, cd_p.value, cm.value, cp.value) if conv else (np.nan, np.nan, np.nan, np.nan, np.nan, np.nan)
 
     def aseq(self, a_start, a_end, a_step):
         """Analyze airfoil at a sequence of angles of attack.
