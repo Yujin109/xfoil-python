@@ -23,3 +23,4 @@ build_backup
 *.mod
 
 .vscode
+src/xfoil/__pycache__/*
