@@ -69,6 +69,8 @@ class XFoil(object):
         self._lib.get_mach.restype = c_float
         self._lib.get_n_crit.restype = c_float
 
+        self.file_boundary_layer = str()
+
     def __del__(self):
         handle = self._lib._handle
         del self._lib
@@ -325,7 +327,7 @@ class XFoil(object):
         cp[isnan] = np.nan
         return a.astype(float), cl.astype(float), cd.astype(float), cm.astype(float), cp.astype(float)
 
-    def dump_boundary_layer(self, fname='boundary_layer.txt'):
+    def dump_boundary_layer(self, py_name='boundary_layer.txt'):
         """Dump boundary layer data to file. 
 
         Parameters
@@ -336,9 +338,13 @@ class XFoil(object):
         -------
         None
         """
-        # Get file name length
-        c_fname, string_length = self._py2c_string(fname)
+        # Get file name in C format
+        c_fname, string_length = self._py2c_string(py_name)
 
+        # Save it for later postprocessing
+        self.file_boundary_layer = py_name
+
+        # Compute the boundary layer properties and dump them
         self._lib.boundary_layer_dump(c_fname, byref(string_length))
 
     def dump_cp(self, fname='cp.txt'):
