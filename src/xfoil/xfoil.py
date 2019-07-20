@@ -25,6 +25,8 @@ import ctypes
 import os
 import glob
 
+from deprecated import deprecated
+
 from ctypes import c_bool, c_int, c_float, byref, POINTER, cdll, c_char_p, c_char
 from shutil import copy2
 from tempfile import NamedTemporaryFile
@@ -253,6 +255,7 @@ class XFoil(object):
 
         return (a.value, cd.value, cd_f.values, cd_p.value, cm.value, cp.value) if conv else (np.nan, np.nan, np.nan, np.nan, np.nan, np.nan)
 
+    @deprecated(reason='The changes in the Fortran API have not been included here. Unexpected behaviour if called.')
     def aseq(self, a_start, a_end, a_step):
         """Analyze airfoil at a sequence of angles of attack.
 
@@ -288,8 +291,10 @@ class XFoil(object):
         cd[isnan] = np.nan
         cm[isnan] = np.nan
         cp[isnan] = np.nan
+        
         return a.astype(float), cl.astype(float), cd.astype(float), cm.astype(float), cp.astype(float)
 
+    @deprecated(reason='The changes in the Fortran API have not been included here. Unexpected behaviour if called.')
     def cseq(self, cl_start, cl_end, cl_step):
         """Analyze airfoil at a sequence of lift coefficients.
 
