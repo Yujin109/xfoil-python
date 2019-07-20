@@ -53,6 +53,9 @@ class BoundaryLayer():
         self.P = df_bl['P'].values
         self.m = df_bl['m'].values
 
+        # Memory clean-up
+        del df_bl
+
     def _find_airfoil(self):
         """Find the array index at the end of the profile.  
         
