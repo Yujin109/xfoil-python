@@ -1,4 +1,4 @@
-> **IMPORTANT NOTE: major changes and upgrades are currently taking place. This readme file is no longer up to date. Please contact me if you need any details on current usage.**
+> **IMPORTANT NOTE: major changes and upgrades are currently taking place. This readme file is no longer up to date. Please contact me if you need any details on current usage. (July 2019)**
 
 General
 -------
