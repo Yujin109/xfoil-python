@@ -16,4 +16,6 @@
 #   You should have received a copy of the GNU General Public License
 #   along with XFoil.  If not, see <https://www.gnu.org/licenses/>.
 from .xfoil import XFoil
-from . import model
+from .model import Airfoil
+from .bdlayer import BoundaryLayer
+from .cpdist import CpAnalysis

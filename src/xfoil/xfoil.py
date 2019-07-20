@@ -31,6 +31,7 @@ from ctypes import c_bool, c_int, c_float, byref, POINTER, cdll, c_char_p, c_cha
 from shutil import copy2
 from tempfile import NamedTemporaryFile
 
+
 from xfoil.model import Airfoil
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -365,9 +366,9 @@ class XFoil(object):
 
         """
         # Get file name length
-        c_fname, string_length = self._py2c_string(fname)
+        c_name, string_length = self._py2c_string(fname)
 
-        self._lib.cp_dump(c_fname, byref(string_length))
+        self._lib.cp_dump(c_name, byref(string_length))
 
     def _py2c_string(self, fname):
         """Convert a Python string to a C char array.
