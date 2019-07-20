@@ -339,13 +339,13 @@ class XFoil(object):
         None
         """
         # Get file name in C format
-        c_fname, string_length = self._py2c_string(py_name)
+        c_name, string_length = self._py2c_string(py_name)
 
         # Save it for later postprocessing
         self.file_boundary_layer = py_name
 
         # Compute the boundary layer properties and dump them
-        self._lib.boundary_layer_dump(c_fname, byref(string_length))
+        self._lib.boundary_layer_dump(c_name, byref(string_length))
 
     def dump_cp(self, fname='cp.txt'):
         """Dump Cp coefficient to file.
