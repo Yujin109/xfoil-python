@@ -24,3 +24,7 @@ build_backup
 
 .vscode
 src/xfoil/__pycache__/*
+notebooks/*
+boundary_layer.txt
+cp.txt
+debug.py
