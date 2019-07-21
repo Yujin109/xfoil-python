@@ -218,6 +218,8 @@ class XFoil(object):
         -------
         cl, cd, cd_f, cd_p, cm, cp : float
             Corresponding values of the lift, drag, pressure drag, moment, and minimum pressure coefficients.
+        
+        # TODO: reorganize a and cl to always give the same output structure.
         """
         cl   = c_float()
         cd   = c_float()
@@ -232,7 +234,8 @@ class XFoil(object):
         return (cl.value, cd.value, cd_f.value, cd_p.value, cm.value, cp.value) if conv else (np.nan, np.nan, np.nan, np.nan, np.nan, np.nan)
 
     def cl(self, cl):
-        """"Analyze airfoil at a fixed lift coefficient.
+        """
+        Analyze airfoil at a fixed lift coefficient.
 
         Parameters
         ----------
@@ -254,7 +257,7 @@ class XFoil(object):
 
         self._lib.cl(byref(c_float(cl)), byref(a), byref(cd), byref(cd_f), byref(cd_p), byref(cm), byref(cp), byref(conv))
 
-        return (a.value, cd.value, cd_f.values, cd_p.value, cm.value, cp.value) if conv else (np.nan, np.nan, np.nan, np.nan, np.nan, np.nan)
+        return (a.value, cd.value, cd_f.value, cd_p.value, cm.value, cp.value) if conv else (np.nan, np.nan, np.nan, np.nan, np.nan, np.nan)
 
     @deprecated(reason='The changes in the Fortran API have not been included here. Unexpected behaviour if called.')
     def aseq(self, a_start, a_end, a_step):
