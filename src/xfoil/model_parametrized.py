@@ -42,7 +42,19 @@ from numpy.linalg import solve
 from xfoil import Airfoil
 from dotmap import DotMap
 
-class Parsec():
+class ParametrizedAirfoil():
+
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def fit(airfoil:Airfoil):
+        
+        # Code to find the best fitting coefficients.
+        
+        
+        return design_vector
+
+class Parsec(ParametrizedAirfoil):
     """
     Parsec airfoil parametrization.
 
@@ -52,6 +64,7 @@ class Parsec():
     """
 
     def __init__(self, design_vector: dict = None, N = 160):
+        super().__init__()
 
         # Save design vector
         if design_vector is None:
