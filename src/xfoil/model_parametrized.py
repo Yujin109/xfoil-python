@@ -40,6 +40,7 @@ import numpy as np
 from numpy.linalg import solve
 
 from xfoil import Airfoil
+from dotmap import DotMap
 
 class Parsec():
     """
@@ -68,6 +69,18 @@ class Parsec():
                     15.0 / 4,
                     63.0 / 4,
                     99.0 / 4]
+        
+        # Display attributes
+        self._rhs_upper    = None
+        self._rhs_lower    = None
+        self._matrix_lower = None
+        self._matrix_upper = None
+        self._coeff_lower  = None
+        self._coeff_upper  = None
+
+        self.x       = None
+        self.y_upper = None
+        self.y_lower = None
 
     def _load_basic_design_vector(self):
         """
@@ -100,7 +113,7 @@ class Parsec():
 
         return {'p{}'.format(q):value for q, value in zip(range(1,12), coeff)}
 
-    def create_airfoil(self, p:dict = None):
+    def create_airfoil(self, p:dict = None, x: np.array = None):
         """
         Create airfoil coordinates compatible with xfoil.
 
@@ -112,30 +125,59 @@ class Parsec():
 
         Returns
         -------
-        airfoil: xfoil.Airfoil type object
+        Airfoil
         """
         if p is not None:
             self.dv = deepcopy(p)
         else:
             pass
 
+        # Prepare linear system
         self._create_matrices()
+        self._create_rhs()
 
-        self._rhs_upper = self._create_rhs(sign = '+')
-        self._rhs_lower = self._create_rhs(sign = '-')
-
+        # Solve linear system
         self._compute_coefficients()
 
-        self._compute_coordinates()
+        # Compute airfoil
+        self._compute_coordinates(x)
+
+        # Prepare output
+        x = np.concatenate([np.flip(self.x), self.x[1:]])
+        y = np.concatenate([np.flip(self.y_upper), self.y_lower[1:]])
+
+        return Airfoil(x = x, y = y)
+
+    def _create_rhs(self):
+        """
+        Assemble the RHS vectors for the upper and lower surface.
+        """
+        self._rhs_upper = self._fill_in_rhs(sign = '+')
+        self._rhs_lower = self._fill_in_rhs(sign = '-')
 
     def _compute_coefficients(self):
+        """
+        Solve linear system to obtain PARSEC coefficients. 
+        """
 
         self._coeff_upper = solve(self._matrix_upper, self._rhs_upper)
         self._coeff_lower = solve(self._matrix_lower, self._rhs_lower)
 
-    def _compute_coordinates(self):
+    def _compute_coordinates(self, x: np.array = None):
+        """
+        Compute the airfoil coordinates for the current 
+        design vector.
 
-        x = self._cosine_distribution()
+        Parameters
+        ----------
+        x: np.array
+
+        Returns
+        -------
+        """
+
+        if x is None:
+            x = self._cosine_distribution()
 
         x_q = np.array([x**q for q in self._q1])
         
@@ -144,21 +186,46 @@ class Parsec():
 
         self.x = x
 
-    def _cosine_distribution(self):
+    def _cosine_distribution(self, N:int = None):
+        """
+        Compute a cosine distribution in [0,1]. 
+
+        Returns
+        -------
+        x: np.array
+        """
 
         from math import cos, pi
 
-        N = self.N
+        if N is None:
+            N = self.N
 
         x = np.linspace(start = 0, stop = 1, num = N)
         x = list(map(cos, x * pi))
+
+        # Sort from negative to positive
         x = np.sort(np.array(x))
+
+        # Center and scale
         x += 1.0
         x /= 2.0
 
         return x
 
-    def _create_rhs(self, sign = '+'):
+    def _fill_in_rhs(self, sign = '+'):
+        """
+        Fill-in vector according to airfoil surface.
+
+        Parameters
+        ---------
+        sign: str
+            '+': Upper surface
+            '-': Lower surface
+
+        Returns
+        -------
+        vec: np.array
+        """
 
         from math import tan, sqrt, pi
 
