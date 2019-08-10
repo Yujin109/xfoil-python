@@ -17,5 +17,6 @@
 #   along with XFoil.  If not, see <https://www.gnu.org/licenses/>.
 from .xfoil import XFoil
 from .model import Airfoil
+from .model_parametrized import Parsec
 from .bdlayer import BoundaryLayer
 from .cpdist import CpAnalysis

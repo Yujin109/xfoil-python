@@ -17,8 +17,7 @@
 #   along with XFoil.  If not, see <https://www.gnu.org/licenses/>.
 import numpy as np
 
-
-class Airfoil(object):
+class Airfoil():
     """Airfoil
 
     Attributes
@@ -29,7 +28,6 @@ class Airfoil(object):
     """
 
     def __init__(self, x, y):
-        super().__init__()
         self.coords = np.ndarray((0, 2))
         self.x = x
         self.y = y
