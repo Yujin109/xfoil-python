@@ -36,6 +36,8 @@ Notes on Numerical Fluid Mechanics (NNFM), vol 65. Vieweg+Teubner Verlag
 
 from copy import deepcopy
 
+from scipy.optimize import minimize
+
 import numpy as np
 from numpy.linalg import solve
 
@@ -68,20 +70,15 @@ class Parsec(ParametrizedAirfoil):
 
         # Save design vector
         if design_vector is None:
-            self.dv = self._load_basic_design_vector()
+            self.dv = self._basic_design_vector()
         else:
             self.dv = design_vector
 
         self.N = N
 
         # Create specific PARSEC coefficient vectors
-        self._q1 = [(2.0 * n - 1)/2.0 for n in range(1,7)]
-        self._q2 = [-1.0 / 4,
-                     3.0 / 4,
-                    15.0 / 4,
-                    15.0 / 4,
-                    63.0 / 4,
-                    99.0 / 4]
+        self._q1 = [n + 1/2 for n in range(0,6)]
+        self._q2 = [n**2 - 1/4 for n in range(0,6)]
         
         # Display attributes
         self._rhs_upper    = None
@@ -95,7 +92,7 @@ class Parsec(ParametrizedAirfoil):
         self.y_upper = None
         self.y_lower = None
 
-    def _load_basic_design_vector(self):
+    def _basic_design_vector(self):
         """
         Load a basic design vector.
 
@@ -116,11 +113,11 @@ class Parsec(ParametrizedAirfoil):
                    
                 0.3,      # p5  | Lower crest position in horizontal coordinates
                 -0.1,     # p6  | Lower crest position in vertical coordinates
-                0.0,      # p7  | Lower crest curvature
+                0.1,      # p7  | Lower crest curvature
 
-                0.0,      # p8  | Trailing edge offset in vertical sense
-                0.0,      # p9  | Trailing edge thickness
-                10.0,     # p10 | Trailing edge direction
+                0.1,      # p8  | Trailing edge offset in vertical sense
+                0.1,      # p9  | Trailing edge thickness
+                1.0,      # p10 | Trailing edge direction
                 20.0      # p11 | Trailing edge wedge angle
                 ]
 
@@ -144,6 +141,9 @@ class Parsec(ParametrizedAirfoil):
             self.dv = deepcopy(p)
         else:
             pass
+
+        if x is not None:
+            self.N = len(x)
 
         # Prepare linear system
         self._create_matrices()
@@ -191,6 +191,9 @@ class Parsec(ParametrizedAirfoil):
 
         if x is None:
             x = self._cosine_distribution()
+
+        # Make sure we are mapping the [0,1] domain
+        x = np.sort(x)
 
         x_q = np.array([x**q for q in self._q1])
         
@@ -260,7 +263,7 @@ class Parsec(ParametrizedAirfoil):
             vec[4] = self.dv['p7']
             vec[5] = -sqrt(2.0 * self.dv['p1'])
         else:
-            raise ValueError('Fix the sign!')
+            raise ValueError('Which section do you want to create?')
 
         return vec
 
@@ -284,16 +287,26 @@ class Parsec(ParametrizedAirfoil):
         -------
         matrix: np.ndarray(shape=(6,6))
 
+        Notes
+        -----
+        Row definitions:
+            0: TE height
+            1: Max. location
+            2: TE direction
+            3: Max. condition
+            4: Curvature
+            5: LE radius
+
         """
 
         matrix = np.ndarray(shape=(6,6))
 
-        matrix[0]   = np.ones(6,                          dtype=float)
-        matrix[1]   = np.array([p**q for q in self._q1], dtype=float)
-        matrix[2]   = np.array([q for q in self._q1],     dtype=float)
+        matrix[0]   = np.ones(6,                                   dtype=float) 
+        matrix[1]   = np.array([p**q for q in self._q1],           dtype=float)
+        matrix[2]   = np.array([q for q in self._q1],              dtype=float)
         matrix[3]   = np.array([q * p**(q-1.0) for q in self._q1], dtype=float)
         matrix[4]   = np.array([q2 * p**(q1-2.0) for q1, q2 in zip(self._q1, self._q2)], dtype=float)
-        matrix[5]   = np.zeros(6, dtype = float)
+        matrix[5]   = np.zeros(6,                                  dtype = float)
         matrix[5,0] = 1.0
 
         return matrix
