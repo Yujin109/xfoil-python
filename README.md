@@ -10,7 +10,7 @@ This is a stripped down version of XFOIL, presented in the form of a Python modu
 
 Building and Installing the Python Module
 -----------------------------------------
-See https://github.com/KikeM/xfoil-python/issues/7 for installation instructions. 
+See https://github.com/KikeM/xfoil-python/issues/7#issuecomment-659533863 for installation instructions. 
 
 Using the Module
 ----------------
