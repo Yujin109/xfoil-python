@@ -35,11 +35,11 @@ from tempfile import NamedTemporaryFile
 from xfoil.model import Airfoil
 
 here = os.path.abspath(os.path.dirname(__file__))
-#lib_path = glob.glob(os.path.join(here, 'libxfoil.*'))[0]
-#lib_ext = lib_path[lib_path.rfind('.'):]
+lib_path = glob.glob(os.path.join(here, 'libxfoil.*'))[0]
+lib_ext = lib_path[lib_path.rfind('.'):]
 
-lib_path = '/Users/Kike/Library/Mobile Documents/com~apple~CloudDocs/Documents/Inbox/TU_Delft/MsC/Q1/Aircraft_Aerodynamics/Code/xfoil-python/build/lib.macosx-10.7-x86_64-3.6/xfoil/libxfoil.dylib'
-lib_ext = 'dylib'
+# lib_path = '/Users/Kike/Library/Mobile Documents/com~apple~CloudDocs/Documents/Inbox/TU_Delft/MsC/Q1/Aircraft_Aerodynamics/Code/xfoil-python/build/lib.macosx-10.7-x86_64-3.6/xfoil/libxfoil.dylib'
+# lib_ext = 'dylib'
 
 fptr = POINTER(c_float)
 bptr = POINTER(c_bool)
