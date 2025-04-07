@@ -1,3 +1,5 @@
+# ** Vertex AI Workbench（L4）環境にカスタマイズ済み**
+
 > **IMPORTANT NOTE: major changes and upgrades are currently taking place. This readme file might not be up to date. Please contact me if you need any details on current usage. (July 2020)**
 
 General
