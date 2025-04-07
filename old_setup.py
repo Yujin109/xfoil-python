@@ -73,7 +73,7 @@ class CMakeBuild(build_ext):
                 # multiple versions of Python are installed
                 '-DPYTHON_EXECUTABLE={}'.format(sys.executable),
                 # Add other project-specific CMake arguments if needed
-                '-DCMAKE_Fortran_COMPILER=/usr/local/bin/gfortran',
+                '-DCMAKE_Fortran_COMPILER=/usr/bin/gfortran',
                 '-DCMAKE_MAKE_PROGRAM=make',
             ]
 
